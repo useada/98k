@@ -1,0 +1,4 @@
+(library
+ (name k98)
+ (public_name k98)
+ (libraries))

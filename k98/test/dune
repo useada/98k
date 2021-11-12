@@ -1,0 +1,4 @@
+(tests
+ (names k98_test)
+ (package k98)
+ (libraries alcotest k98))
