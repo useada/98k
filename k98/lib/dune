@@ -1,4 +1,4 @@
 (library
  (name k98)
  (public_name k98)
- (libraries))
+ (libraries owl owl-base owl-top owl-zoo owl-plplot cohttp async cohttp-async))
