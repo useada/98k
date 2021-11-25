@@ -1,4 +1,6 @@
 (executable
  (name main)
  (public_name k98)
- (libraries k98))
+ (libraries k98 ppx_let)
+ (preprocess (pps ppx_let))
+ )
