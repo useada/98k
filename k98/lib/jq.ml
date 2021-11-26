@@ -17,16 +17,18 @@ let get_data req =
   let open Async in
   let open Cohttp in
   let open Cohttp_async in
-  Or_error.of_exn_result
-  @@ Thread_safe.block_on_async (fun () ->
-         let req_body = Body.of_string req in
-         Client.post ~body:req_body jqapi_uri >>= fun (resp, body) ->
-         let code = resp |> Response.status |> Code.code_of_status in
-         match code with
-         | 200 ->
-             Body.to_string body >>| fun body ->
-             if err_check body then failwith body else body
-         | _ -> failwith (sprintf "response code: %d" code))
+  Thread_safe.block_on_async_exn (fun () ->
+      let req_body = Body.of_string req in
+      Client.post ~body:req_body jqapi_uri >>= fun (resp, body) ->
+      let code = resp |> Response.status |> Code.code_of_status in
+      match code with
+      | 200 ->
+          Body.to_string body >>| fun body ->
+          if err_check body then Or_error.error_string body
+          else Or_error.return body
+      | _ ->
+          Deferred.return @@ Or_error.error_string
+          @@ sprintf "response code: %d" code)
 
 let get_dataframe req =
   let open Or_error.Monad_infix in
